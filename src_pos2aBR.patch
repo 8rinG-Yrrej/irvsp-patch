@@ -16,3 +16,8 @@ diff -e -w ./Makefile ../src_pos2aBR_mod/Makefile
 22c
 	$(fc) -c -cpp -DPOS2ABRDATA $*.f90
 .
+2,4c
+fc = gfortran
+FLAGS = -g --check=all
+cc = gcc
+.
