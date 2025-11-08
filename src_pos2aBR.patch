@@ -1,0 +1,18 @@
+diff -e -w ./crystal.f90 ../src_pos2aBR_mod/crystal.f90
+1123c
+    integer, parameter :: dp = kind(1.d0)
+.
+834c
+    integer, parameter :: dp=kind(1.d0)
+.
+261c
+    if (spginv_loc /= 0) then
+.
+Binary files ./libsymspg.a and ../src_pos2aBR_mod/libsymspg.a differ
+diff -e -w ./Makefile ../src_pos2aBR_mod/Makefile
+25c
+	$(fc) -c -cpp -DPOS2ABRDATA $(FLAGS) $*.f90
+.
+22c
+	$(fc) -c -cpp -DPOS2ABRDATA $*.f90
+.
