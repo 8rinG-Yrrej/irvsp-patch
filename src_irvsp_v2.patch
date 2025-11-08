@@ -1,0 +1,77 @@
+diff -u -w ./addsign.f90 ../src_irvsp_v2_mod/addsign.f90
+--- ./addsign.f90	2021-03-10 13:33:42.000000000 -0500
++++ ../src_irvsp_v2_mod/addsign.f90	2025-09-17 16:58:13.635813438 -0400
+@@ -168,14 +168,14 @@
+     !> symmetry operation to be one of the generators,
+     !> note that this choise may lead to a larger generator set
+     do ir = 2, DoubNum/2 
+-       if(IsGene(ir)==.true.) then 
++       if(IsGene(ir)) then
+           ByGene(ir) = .true.
+           do ir2 = 2, DoubNum/2  
+              if (ByGene(ir2)) then 
+                 irtmp = ir 
+                 do 
+                    irtmp = abs(MultbRef(ir2,irtmp))
+-                   if (ByGene(irtmp) == .true.) exit
++                   if (ByGene(irtmp)) exit
+                    IsGene(irtmp) = .false.
+                    ByGene(irtmp) = .true.
+                   !write(6,*) "ir, ir2, irtmp", ir, ir2, irtmp
+diff -u -w ./Makefile ../src_irvsp_v2_mod/Makefile
+--- ./Makefile	2021-10-26 03:49:44.000000000 -0400
++++ ../src_irvsp_v2_mod/Makefile	2025-11-08 18:11:28.878857427 -0500
+@@ -1,7 +1,7 @@
+ .SUFFIXES: .o .f .f90
+-F90    = ifort  
++F90    = gfortran
+ LINKER = $(F90) 
+-FLAGS  = -g -traceback #-check all 
++FLAGS  = -g #-traceback #-check all
+ 
+ MODULES=  init.o symm.o
+ MOD1   =  nonsymm.o
+@@ -21,7 +21,7 @@
+ 	$(LINKER) $(FLAGS) -o irvsp  $(ALL)  $(LIBS)
+ 
+ $(MOD1):%.o:%.f90
+-	$(F90) -c $(FLAGS) -fpp -DIRVSPDATA $*.f90
++	$(F90) -c $(FLAGS) -cpp -DIRVSPDATA $*.f90
+ 
+ #$(MOD1):part1 part2
+ #	cat part1 >  nonsymm.f90
+@@ -31,11 +31,13 @@
+ $(MODULES):%.o:%.f90
+ 	$(F90) -c $(FLAGS) $*.f90
+ $(WAVEMD):%.o:%.f90
+-	ifort -assume byterecl -c  $*.f90
++	$(F90) -frecord-marker=4 -c $*.f90
++#	$(F90) -assume byterecl -c  $*.f90
++
+ $(VECT):%.o:%.f90
+ 	$(F90) -c $(FLAGS) $*.f90
+-$(VECT2):%.o:%.f
+-	$(F90) -c -FR  $*.f
++$(VECT2):%.o:%.f90
++	$(F90) -c -FR  $*.f90
+ 
+ clean:
+ 	rm -f *.mod *.o 
+diff -u -w ./nonsymm.f90 ../src_irvsp_v2_mod/nonsymm.f90
+--- ./nonsymm.f90	2021-10-25 22:11:18.000000000 -0400
++++ ../src_irvsp_v2_mod/nonsymm.f90	2025-09-17 19:43:09.171010134 -0400
+@@ -816,10 +816,10 @@
+      !IE=1
+       IE=nmin
+        WRITE(66,"(/,A4,$)") samplekname(IK)//': '
+-       IF(.not. IR) WRITE(67,"(/,I3,$)") -IK
+-       IF( IR) WRITE(67,"(/,I3,$)") IK
+-       IF(.not. IR) WRITE(68,"(/,I3,$)") -IK
+-       IF( IR) WRITE(68,"(/,I3,$)") IK
++       IF(IR == 0) WRITE(67,"(/,I3,$)") -IK
++       IF(IR /= 0) WRITE(67,"(/,I3,$)") IK
++       IF(IR == 0) WRITE(68,"(/,I3,$)") -IK
++       IF( IR /= 0) WRITE(68,"(/,I3,$)") IK
+        LCNB=0
+       DO WHILE(IE.LE.NE)
+       ND=1
