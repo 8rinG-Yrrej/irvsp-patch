@@ -1,23 +1,57 @@
-diff -e -w ./crystal.f90 ../src_pos2aBR_mod/crystal.f90
-1123c
-    integer, parameter :: dp = kind(1.d0)
-.
-834c
-    integer, parameter :: dp=kind(1.d0)
-.
-261c
-    if (spginv_loc /= 0) then
-.
-Binary files ./libsymspg.a and ../src_pos2aBR_mod/libsymspg.a differ
-diff -e -w ./Makefile ../src_pos2aBR_mod/Makefile
-25c
-	$(fc) -c -cpp -DPOS2ABRDATA $(FLAGS) $*.f90
-.
-22c
-	$(fc) -c -cpp -DPOS2ABRDATA $*.f90
-.
-2,4c
-fc = gfortran
-FLAGS = -g --check=all
-cc = gcc
-.
+diff -u -w ./crystal.f90 ../src_pos2aBR_mod/crystal.f90
+--- ./crystal.f90	2021-06-10 02:39:50.000000000 -0400
++++ ../src_pos2aBR_mod/crystal.f90	2025-11-08 11:20:02.999766334 -0500
+@@ -258,7 +258,7 @@
+     ! a3 = b3 - 2z
+ 
+     shift = 0.d0 
+-    if (spginv_loc) then
++    if (spginv_loc /= 0) then
+         shift(1) = 0.5d0*(trans_table(1,tabinv_loc)-trans_conv(1,spginv_loc))
+         shift(2) = 0.5d0*(trans_table(2,tabinv_loc)-trans_conv(2,spginv_loc))
+         shift(3) = 0.5d0*(trans_table(3,tabinv_loc)-trans_conv(3,spginv_loc))
+@@ -831,7 +831,7 @@
+ subroutine check_wyck(num_sym,rot_conv,trans_conv,pos_conv, wyck_pos, possible)
+     implicit none 
+ 
+-    real, parameter :: dp=kind(1.d0)
++    integer, parameter :: dp=kind(1.d0)
+     real, parameter :: tol=1e-5
+ 
+     integer, intent(in) :: num_sym 
+@@ -1120,7 +1120,7 @@
+     ! used only for space group with international lable "A..."
+     implicit none 
+ 
+-    real, parameter :: dp = kind(1.d0)
++    integer, parameter :: dp = kind(1.d0)
+ 
+     integer, intent(in) :: num_atom 
+     real(dp), intent(inout) :: positions(3, num_atom), lattice(3,3)
+diff -u -w ./Makefile ../src_pos2aBR_mod/Makefile
+--- ./Makefile	2021-06-10 02:08:03.000000000 -0400
++++ ../src_pos2aBR_mod/Makefile	2025-11-08 11:20:59.141482397 -0500
+@@ -1,7 +1,7 @@
+ .SUFFIXES: .o .f .f90
+-fc = ifort 
+-FLAGS = -g -check all -traceback
+-cc = icc  
++fc = gfortran
++FLAGS = -g --check=all
++cc = gcc
+ 
+ lib =libsymspg.a
+ 
+@@ -19,10 +19,10 @@
+ 	$(fc) -c $(FLAGS) $*.f90
+ 
+ $(VECT1):%.o:%.f90
+-	$(fc) -c -fpp -DPOS2ABRDATA $*.f90
++	$(fc) -c -cpp -DPOS2ABRDATA $*.f90
+ 
+ $(VECT):%.o:%.f90
+-	$(fc) -c -fpp -DPOS2ABRDATA $(FLAGS) $*.f90
++	$(fc) -c -cpp -DPOS2ABRDATA $(FLAGS) $*.f90
+ 
+ spglib_f.o: spglib_f.c
+ 	$(cc) -c $^
