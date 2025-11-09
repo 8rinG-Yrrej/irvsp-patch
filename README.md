@@ -2,8 +2,7 @@
 My patches to irvsp to fix syntax and make it compilable by gfortran.
 
 - Fixed some nonstandard syntaxes, which are only permitted by ifort not gfortran
-- Fix makefile options
-- Make configure.sh inactive.
+- Alter makefile options to work with gfortran.
 
 Original code is the IRVSP at
 https://github.com/zjwang11/IRVSP
