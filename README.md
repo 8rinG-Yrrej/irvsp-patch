@@ -14,3 +14,7 @@ Additional note:
 1. You need a working libsymspg.a from spglib.
 2. Makefile does not encode precedence. Run `make -j 8 -k` multiple times.
 3. Take a look at the configure.sh, and decide it's useful. It contains environment variables required at program runtime.
+
+See also irvsp User Guide at http://www.topmat.org/2024/05/11/irvsp-users-guide/
+In particular,
+*For VASP6.x, please modify the line “CALL SET_SPINROT_WRAPPER(LATT_CUR%B(1,1),-1)” in mkpoints.F to “CALL SET_SPINROT_WRAPPER(LATT_CUR%B(1,1),IU6)” and recompile VASP before using IRVSP.*
